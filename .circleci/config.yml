@@ -39,7 +39,7 @@ jobs:
       - run:
           name: deploy docker image
           command: |
-            ssh $SSH_USER@$SSH_HOST "sudo docker run -d --name ${CONTAINER_NAME} -e mongodb_url=${mongodb_url} -p 127.0.0.1:20000:80 --restart unless-stopped ${CLOUD_CANISTER_URL}:latest"
+            ssh $SSH_USER@$SSH_HOST "sudo docker run -d --name ${CONTAINER_NAME} -e mongodb_url=${mongodb_url} -p ${deployment_port} --restart unless-stopped ${CLOUD_CANISTER_URL}:latest"
 
 
 workflows:
