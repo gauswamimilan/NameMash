@@ -28,18 +28,22 @@ jobs:
         enabled: true
     steps:
       - run:
+          name: get new docker image
+          command: |
+            ssh $SSH_USER@$SSH_HOST "sudo docker pull ${CLOUD_CANISTER_URL}:latest"
+      - run:
           name: remove old docker image
           command: |
             ssh $SSH_USER@$SSH_HOST "sudo docker container stop ${CONTAINER_NAME} || true"
             ssh $SSH_USER@$SSH_HOST "sudo docker container rm ${CONTAINER_NAME} || true"
       - run:
-          name: get new docker image
-          command: |
-            ssh $SSH_USER@$SSH_HOST "sudo docker pull ${CLOUD_CANISTER_URL}:latest"
-      - run:
           name: deploy docker image
           command: |
             ssh $SSH_USER@$SSH_HOST "sudo docker run -d --name ${CONTAINER_NAME} -e mongodb_url=${mongodb_url} -p ${deployment_port} --restart unless-stopped ${CLOUD_CANISTER_URL}:latest"
+      - run:
+          name: prune unused docker images
+          command: |
+            ssh $SSH_USER@$SSH_HOST "sudo yes Y | sudo docker image prune -a"
 
 
 workflows:
