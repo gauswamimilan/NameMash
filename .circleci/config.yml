@@ -1,0 +1,64 @@
+version: '2.1'
+
+jobs:
+  build:
+    machine:
+      image: ubuntu-2204:2023.02.1
+      docker_layer_caching: true
+    resource_class: arm.medium
+    steps:
+      - checkout
+      - run:
+          name: show cwd
+          command: ls
+      - run:
+          name: Build and push Docker image
+          command: |
+            docker build -t "${CLOUD_CANISTER_URL}:latest" .
+      - run:
+          name: Login to cloud.canister
+          command: |
+            docker login --username $DOCKER_LOGIN --password $DOCKER_PWD cloud.canister.io:5000
+      - run:
+          name: Push Docker image to cloud.canister
+          command: |
+            docker push "${CLOUD_CANISTER_URL}:latest"
+  
+  deploy:
+    machine:
+        enabled: true
+    steps:
+      - run:
+          name: remove old docker image
+          command: |
+            ssh $SSH_USER@$SSH_HOST "sudo docker container stop recipe_eater || true"
+            ssh $SSH_USER@$SSH_HOST "sudo docker container rm recipe_eater || true"
+      - run:
+          name: get new docker image
+          command: |
+            ssh $SSH_USER@$SSH_HOST "sudo docker pull ${CLOUD_CANISTER_URL}:latest"
+      - run:
+          name: deploy docker image
+          command: |
+            ssh $SSH_USER@$SSH_HOST "sudo docker run -d --name recipe_eater -e mongodb_url=${mongodb_url} -p 127.0.0.1:20001:80 --restart unless-stopped ${CLOUD_CANISTER_URL}:latest"
+
+
+workflows:
+  version: 2
+  deploy_pipeline:
+    jobs:
+      - build:
+         filters:
+           branches:
+             only:
+               - main
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
+        
+
+#  

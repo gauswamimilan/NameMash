@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Home - Brand</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css?h=63c49130f916e8761302328c73ff1917">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Inter:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&amp;display=swap">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+    <link rel="stylesheet" href="assets/css/accordion-faq-list.css?h=f47106324583193c7d3c36c0bd40c232">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="assets/css/Lista-Productos-Canito.css?h=9d76e0a02cb51c22f96cdb4c2cf82a66">
+</head>
+
+<body style="/*background: url(&quot;design.jpg&quot;);*/background-position: 0 -60px;">
+    <nav class="navbar navbar-light navbar-expand-md sticky-top navbar-shrink py-3" id="mainNav">
+        <div class="container"><a class="navbar-brand d-flex align-items-center" href="/"></a><button
+                data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span
+                    class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="100.html">Top 100</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <header class="bg-primary-gradient">
+        <div class="container text-center pt-4 pt-xl-5">
+            <div class="row pt-5" style="padding-top: 0px !important;">
+                <div class="col">
+                    <h1 style="color: var(--bs-red);padding-bottom: 10px;font-weight: bold;">NameMash</h1>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="row">
+        <div class="col">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 style="text-align: center;font-size: 20.88px;padding-bottom: 19px;margin-top: 11px;">Having
+                            trouble choosing a name, let the world decide</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row" style="height: 249.25px;margin-top: auto;margin-bottom: auto;">
+                    <div class="col-md-4" style="margin-top: auto;margin-bottom: auto;background: white;">
+                        <h1 data-bss-hover-animate="bounce"
+                            style="text-align: center;text-decoration: underline;font-weight: bold;color: var(--bs-blue);">
+                            <a href="#" style="color: var(--bs-blue);" id="first_name"></a>
+                        </h1>
+                    </div>
+                    <div class="col-md-4" style="margin-top: auto;margin-bottom: auto;">
+                        <h1 style="text-align: center;position: relative;font-weight: bold;"><span
+                                style="color: rgb(149, 2, 143);">VS</span></h1>
+                    </div>
+                    <div class="col-md-4" style="margin-top: auto;margin-bottom: auto;">
+                        <h1 data-bss-hover-animate="bounce"
+                            style="text-align: center;text-decoration: underline;font-weight: bold;color: var(--bs-blue);">
+                            <a href="#" style="color: var(--bs-blue);" id="second_name"></a>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Flexbox container for aligning the toasts -->
+    <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center w-100">
+        <div class="toast-container position-absolute bottom-0 end-0 p-2">
+            <!-- Then put toasts within -->
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="toast_notification">
+                <div class="toast-header">
+                    <strong class="me-auto" id="toast_header">Bootstrap</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body" id="toast_message">
+                    Hello, world! This is a toast message.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/bs-init.js?h=7563c52cc0a72a92d96ce0159b71241c"></script>
+    <script src="assets/js/bold-and-bright.js?h=914b066f52f5e2b2583e4d1558c90518"></script>
+</body>
+<script>
+    var base_url = "/";
+
+    var name_list = [];
+    var name_mash_data = {};
+    var myToastEl = document.getElementById('toast_notification')
+    var myToast = new bootstrap.Toast(myToastEl);
+
+    function get_data() {
+        $.get(base_url + "get_names", function (data, status) {
+            name_list = data;
+            $("#first_name").text(
+                data.names_list[0].selection_name
+            );
+            $("#second_name").text(
+                data.names_list[1].selection_name
+            );
+            name_mash_data = data;
+        });
+    }
+
+    function show_toast(header, message) {
+        $("#toast_header").text(header);
+        $("#toast_message").text(message);
+        myToast.show();
+    }
+
+    get_data();
+</script>
+<script>
+    $("#first_name").click(function () {
+        let request_data = {
+            "token": name_mash_data.token,
+            "first_id": name_mash_data.first_id,
+            "second_id": name_mash_data.second_id,
+            "voted_id": 1
+        };
+        $.ajax({
+            type: "POST",
+            url: base_url + "select",
+            data: JSON.stringify(request_data),
+            contentType: "application/json",
+            success: function (response) {
+                console.log(response);
+            },
+            dataType: "json"
+        });
+
+        let first_selection = $("#first_name").text();
+        show_toast(
+            first_selection, "You have successfully selected " + first_selection
+        );
+
+        get_data();
+    });
+
+
+    $("#second_name").click(function () {
+        let request_data = {
+            "token": name_mash_data.token,
+            "first_id": name_mash_data.first_id,
+            "second_id": name_mash_data.second_id,
+            "voted_id": 2
+        };
+        $.ajax({
+            type: "POST",
+            url: base_url + "select",
+            data: JSON.stringify(request_data),
+            contentType: "application/json",
+            success: function (response) {
+                console.log(response);
+            },
+            dataType: "json"
+        });
+
+        let first_selection = $("#second_name").text();
+        show_toast(
+            first_selection, "You have successfully selected " + first_selection
+        );
+
+        get_data();
+    });
+</script>
+
+</html>
