@@ -4,28 +4,24 @@ jobs:
   build:
     machine:
       image: ubuntu-2204:2023.02.1
-    # resource_class: arm.medium
+    resource_class: arm.medium
     steps:
       - checkout
       - run:
           name: show cwd
           command: ls
       - run:
-          name: Using Buildx for docker
+          name: Build Docker image
           command: |
-            docker buildx create --use
+            docker build -t "${CLOUD_CANISTER_URL}:latest" .
       - run:
           name: Login to cloud.canister
           command: |
             docker login --username $DOCKER_LOGIN --password $DOCKER_PWD cloud.canister.io:5000
       - run:
-          name: Build Docker image
+          name: Push Docker image to cloud.canister
           command: |
-            docker buildx build --platform=linux/amd64,linux/arm64 -t "${CLOUD_CANISTER_URL}:latest" --push .
-      # - run:
-      #     name: Push Docker image to cloud.canister
-      #     command: |
-      #       docker push "${CLOUD_CANISTER_URL}:latest"
+            docker push "${CLOUD_CANISTER_URL}:latest"
   
   deploy:
     machine:
