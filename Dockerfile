@@ -8,4 +8,8 @@ CMD ["uvicorn", "fast_api_app:app", "--host", "0.0.0.0", "--port", "80"]
 
 
 # docker build -t name_mash .
+
+# docker buildx create --use
+# docker buildx build --platform=linux/amd64,linux/arm64 -t name_mash .
+
 # docker run -d --name name_mash -p 127.0.0.1:20000:80 --restart unless-stopped name_mash
